@@ -1,7 +1,10 @@
 import unittest
 import reconciliaton as recon 
 
-## todo intergration test 
+
+## todo intergration test
+## todo think about the interface???
+## how about using bit data ???
 class TestRecon(unittest.TestCase):
     def test_where(self):
         recon.where("order.csv", "$2 >100 && $3== 1")
@@ -12,7 +15,7 @@ class TestRecon(unittest.TestCase):
     def test_transform(self):
         recon.transform("out_order.csv", "$2 = $2 * 100;", "|")
 
-    ## todo only show the head of first file
+    ## todo only show the head of first file?
     def test_merge(self):
         recon.merge("order.csv", "out_order.csv")
 
