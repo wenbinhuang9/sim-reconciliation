@@ -1,15 +1,6 @@
 import os
 
-## how about using name from relational algebra
-def rename(csvFile, headers):
-    if type(headers) is str:
-        renameFromList(headers)
-    elif type(headers) is dict:
-        renmaeFromDict(headers)
-    else:
-        print("please input valid headers")
-
-def renameFromString(csvFile, headerString):
+def rename(csvFile, headerString):
     targetFile = csvFile + ".tmp"
     renameSedCommand = "sed '1 s/^.*$/{0}/' {1} > {2}".format(headerString, csvFile, targetFile)
     stream = os.popen(renameSedCommand)
@@ -17,24 +8,30 @@ def renameFromString(csvFile, headerString):
 
     return targetFile
 
-def renmaeFromDict(csvFile, headDict, sep = ','):
-    ## todo we need to support partial rename by using dict
-    pass 
+def copyHeader(orign, to):
+    line = ""
+    with open(orign) as f:
+        line  = f.readline()
 
-def filter():
-    pass 
+    with open(to, 'w') as f:
+        f.write(line)
 
-
-## todo only support delete the fied by name right now 
-def filterCols(csvFile, colsDeletedList, sep = ','):    
+def selection(csvFile, selectString, sep = ','):    
+    print ("sep is :{0}".format(sep))
     targetCsvFile = csvFile + ".tmp"
+
+    with open(targetCsvFile, 'w') as f:
+        f.write(selectString)
+
+    copyHeader(csvFile, targetCsvFile)
     fieldNameIdx = getFieldNameIdx(csvFile, sep)
 
-    filteredFiledIdx = [v for k, v in fieldNameIdx.items() if k not in colsDeletedList]
+    filteredFiledIdx = [v for k, v in fieldNameIdx.items() if k in selectString]
     sepString = "\"" + sep + "\""
-    printString = sepString.join(["$" + str(idx) for idx in fieldNameIdx])
-    awkPrintCommand = " ".join(["awk -F", sep, printString, csvFile])
-    awkPrintCommand = "awk -F '{0}' '{{print {1}}} {2} > {3}'".format(sep, printString, \
+
+    printString = sepString.join(["$" + str(idx) for idx in filteredFiledIdx])
+
+    awkPrintCommand = "awk -F '{0}' '{{print {1}}}' {2} >> {3}".format(sep, printString, \
         csvFile, targetCsvFile)
 
     print("start to execute awk command:{0}".format(awkPrintCommand))
@@ -48,13 +45,13 @@ def getFieldNameIdx(csvFile, sep=','):
     with open(csvFile) as f:
         headers = f.readline()
         fileds = headers.split(sep)
-        return {name: i + 1 for i, name in enumerate(fileds)}
+        return {name.strip(): i + 1 for i, name in enumerate(fileds)}
 
 
-def filterRows(csvFile, boolExpr, sep = ','):
+def where(csvFile, boolExpr, sep = ','):
     targetFile = csvFile + ".tmp"
-
-    awkCommand = "awk -F '{0}' '{{if({1}) {{print}}}}\' {2} > {3}".format(sep, \
+    copyHeader(csvFile, targetFile)
+    awkCommand = "awk -F '{0}' '{{if({1}) {{print}}}}\' {2} >> {3}".format(sep, \
         boolExpr, csvFile, targetFile)
     
     print("filterRows, begin to execute awk command: {0}".format(awkCommand))
@@ -65,7 +62,8 @@ def filterRows(csvFile, boolExpr, sep = ','):
 
 def transform(csvFile, transformExpre, sep = ","):
     targetFile = csvFile + ".tmp"
-    awkCommand = "awk -F '{0}' '{{ {1} print}}' {2} > {3}".format(sep, transformExpre, csvFile, \
+    copyHeader(csvFile, targetFile)
+    awkCommand = "awk -F '{0}' '{{ {1} print}}' {2} >> {3}".format(sep, transformExpre, csvFile, \
         targetFile)
 
     print("transform, begin executing awk command:{0}".format(awkCommand))
@@ -87,7 +85,7 @@ def diff(csv1, csv2, sep=','):
 
 def merge(csv1, csv2):
     targrtFile =  csv1 + csv2 + ".tmp"
-    mergeCmd = "cat {0} {1} > {2}" 
+    mergeCmd = "cat {0} {1} > {2}".format(csv1, csv2, targrtFile)
     print("merge ,start to execute command:{0}".format(mergeCmd))
 
     stream = os.popen(mergeCmd)
