@@ -94,3 +94,6 @@ def merge(csv1, csv2):
 
     return targrtFile
 
+## todo replace the delimiter, how
+def delimiter(origin, to):
+    pass

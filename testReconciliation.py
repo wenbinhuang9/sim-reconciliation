@@ -1,6 +1,7 @@
 import unittest
 import reconciliaton as recon 
 
+## todo intergration test 
 class TestRecon(unittest.TestCase):
     def test_where(self):
         recon.where("order.csv", "$2 >100 && $3== 1")
@@ -11,11 +12,11 @@ class TestRecon(unittest.TestCase):
     def test_transform(self):
         recon.transform("out_order.csv", "$2 = $2 * 100;", "|")
 
-    ## only show the head of first file
+    ## todo only show the head of first file
     def test_merge(self):
         recon.merge("order.csv", "out_order.csv")
 
-    ## diff should be reorganize, how to reorganize the diif
+    ## todo diff should be reorganize, how to reorganize the diff
     def test_diff(self):
         recon.diff("order.csv", "out_order.csv")
 
