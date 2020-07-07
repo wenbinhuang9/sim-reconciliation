@@ -1,5 +1,6 @@
 import os
 
+## todo organize it by the class , and then do the final test, and then consider the high level interface.
 def rename(csvFile, headerString):
     targetFile = csvFile + ".tmp"
     renameSedCommand = "sed '1 s/^.*$/{0}/' {1} > {2}".format(headerString, csvFile, targetFile)
@@ -72,29 +73,69 @@ def transform(csvFile, transformExpre, sep = ","):
     print(stream.read())
     return targetFile 
 
+## todo how to define the format ? how ? do we need this interface ?
 def diff(csv1, csv2, sep=','):
-    tragetFile = csv1 + csv2
-    ## todo get to familiar with 
-    diffCmd  = "diff {0} {1} > {2} ".format(csv1, csv2, tragetFile)
+    leftFile = diffLeft(csv1, csv2, sep)
+    rightFile = diffRight(csv1, csv2 , sep)
+    commFile = diffComm(csv1, csv2, sep)
+
+    diffFile = csv1 + csv2 + ".diff"
+
+    return  ""
+
+
+
+def diffLeft(csv1, csv2, sep=','):
+    leftFile = csv1 + ".leftdiff"
+    ## todo get to familiar with
+    diffLeft = "comm  -23 {0} {1} > {2} ".format(csv1, csv2, leftFile)
+
 
     print("diff, start to execute diff")
-    stream = os.popen(diffCmd)
+    stream = os.popen(diffLeft)
     print(stream.read())
 
-    return tragetFile
+    return leftFile
+
+
+def diffRight(csv1, csv2, sep=','):
+    rightFile = csv2 + ".rightdiff"
+
+    diffRight = "comm  -13 {0} {1} > {2} ".format(csv1, csv2, rightFile)
+
+    print("diff, start to execute diff")
+    stream = os.popen(diffRight)
+    print(stream.read())
+
+    return rightFile
+
+
+def diffComm(csv1, csv2, sep=','):
+    commonfile = csv1 + csv2 + ".comm"
+
+    diffComm = "comm  -12 {0} {1} > {2} ".format(csv1, csv2, commonfile)
+    print("diff, start to execute diff")
+    stream = os.popen(diffComm)
+    print(stream.read())
+
+    return commonfile
+
 
 def merge(csv1, csv2):
     targrtFile =  csv1 + csv2 + ".tmp"
     
     csv2_tmp = csv2 + ".tmp"
-    deleteFirstLineCommand = "sed '1d' {0} > {1}".format
+    deleteFirstLineCommand = "sed '1d' {0} > {1}".format(csv2, csv2_tmp)
+    stream = os.popen(deleteFirstLineCommand)
+    print(stream.read())
 
-    mergeCmd = "cat {0} {1} > {2}".format(csv1, csv2, targrtFile)
+    mergeCmd = "cat {0} {1} > {2}".format(csv1, csv2_tmp, targrtFile)
     print("merge ,start to execute command:{0}".format(mergeCmd))
 
     stream = os.popen(mergeCmd)
 
     print(stream.read())
+    os.remove(csv2_tmp)
 
     return targrtFile
 

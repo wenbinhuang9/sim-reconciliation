@@ -15,11 +15,9 @@ class TestRecon(unittest.TestCase):
     def test_transform(self):
         recon.transform("out_order.csv", "$2 = $2 * 100;", "|")
 
-    ## todo only show the head of first file?
     def test_merge(self):
         recon.merge("order.csv", "out_order.csv")
 
-    ## todo diff should be reorganize, how to reorganize the diff
     def test_diff(self):
         recon.diff("order.csv", "out_order.csv")
 
