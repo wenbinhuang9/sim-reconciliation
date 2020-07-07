@@ -85,6 +85,10 @@ def diff(csv1, csv2, sep=','):
 
 def merge(csv1, csv2):
     targrtFile =  csv1 + csv2 + ".tmp"
+    
+    csv2_tmp = csv2 + ".tmp"
+    deleteFirstLineCommand = "sed '1d' {0} > {1}".format
+
     mergeCmd = "cat {0} {1} > {2}".format(csv1, csv2, targrtFile)
     print("merge ,start to execute command:{0}".format(mergeCmd))
 
