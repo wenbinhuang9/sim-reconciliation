@@ -4,31 +4,7 @@ import os
 ## todo organize it by the class , and then do the final test, and then consider the high level interface.
 ## todo consider to give a front end??? to make it a very general platform, consider the Jenkins design
 ## todo consider more to be a very general platform
-## todo here 
-## todo here 
 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-## todo here 
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
-def rename(csvFile, headerString):
 def rename(csvFile, headerString):
     targetFile = csvFile + ".tmp"
     renameSedCommand = "sed '1 s/^.*$/{0}/' {1} > {2}".format(headerString, csvFile, targetFile)
